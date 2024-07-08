@@ -2,5 +2,7 @@ package entities;
 
 
 public interface Item {
-    String getName();
+    String description="";
+
+    String getDescription();
 }

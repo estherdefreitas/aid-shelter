@@ -1,9 +1,5 @@
 package entities;
 
-
-import entities.enums.ClothesGender;
-import entities.enums.ClothesSize;
-import entities.enums.ClothesType;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,14 +8,15 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_clothes")
-public class Clothes implements Serializable, Item {
+@Table(name = "tb_foods")
+public class Foods implements Serializable, Item {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -28,11 +25,9 @@ public class Clothes implements Serializable, Item {
     @EqualsAndHashCode.Include
     private Long id;
 
-    private ClothesType name;
-
-    private ClothesSize size;
-
-    private ClothesGender gender;
+    private Integer quantity;
+    private String unitMeasure;
+    private Date expirationDate;
 
     @Override
     public String getDescription() {

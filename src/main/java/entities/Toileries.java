@@ -1,9 +1,6 @@
 package entities;
 
-
-import entities.enums.ClothesGender;
-import entities.enums.ClothesSize;
-import entities.enums.ClothesType;
+import entities.enums.ToileriesType;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,8 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_clothes")
-public class Clothes implements Serializable, Item {
+@Table(name = "tb_toileries")
+public class Toileries implements Serializable, Item {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -28,11 +25,7 @@ public class Clothes implements Serializable, Item {
     @EqualsAndHashCode.Include
     private Long id;
 
-    private ClothesType name;
-
-    private ClothesSize size;
-
-    private ClothesGender gender;
+    private ToileriesType type;
 
     @Override
     public String getDescription() {
