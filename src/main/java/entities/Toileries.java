@@ -2,10 +2,7 @@ package entities;
 
 import entities.enums.ToileriesType;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,6 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_toileries")
@@ -30,5 +28,10 @@ public class Toileries implements Serializable, Item {
     @Override
     public String getDescription() {
         return "";
+    }
+
+    @Override
+    public void setDescription(String description) {
+
     }
 }

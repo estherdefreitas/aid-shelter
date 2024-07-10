@@ -1,10 +1,7 @@
 package entities;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,6 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_foods")
@@ -29,8 +27,20 @@ public class Foods implements Serializable, Item {
     private String unitMeasure;
     private Date expirationDate;
 
+    public Foods(Long id, Integer quantity, String unitMeasure, Date expirationDate) {
+        this.id = id;
+        this.quantity = quantity;
+        this.unitMeasure = unitMeasure;
+        this.expirationDate = expirationDate;
+    }
+
     @Override
     public String getDescription() {
         return "";
+    }
+
+    @Override
+    public void setDescription(String description) {
+
     }
 }
