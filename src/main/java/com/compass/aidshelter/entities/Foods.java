@@ -11,10 +11,10 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_foods")
-public class Foods implements Serializable, Item {
+public class Foods extends Item  implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -34,13 +34,4 @@ public class Foods implements Serializable, Item {
         this.expirationDate = expirationDate;
     }
 
-    @Override
-    public String getDescription() {
-        return "";
-    }
-
-    @Override
-    public void setDescription(String description) {
-
-    }
 }

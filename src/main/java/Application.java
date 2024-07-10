@@ -7,6 +7,7 @@ import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
 import com.compass.aidshelter.entities.enums.ClothesType;
 import com.compass.aidshelter.entities.enums.ToileriesType;
+import com.compass.aidshelter.input.DonationFileReader;
 import com.compass.aidshelter.repositories.ClothesRepository;
 import com.compass.aidshelter.repositories.FoodsRepository;
 import com.compass.aidshelter.repositories.ToileriesRepository;
@@ -19,6 +20,8 @@ public class Application {
     public static void main(String[] args) throws InterruptedException {
 
         DbConfig.build();
+
+        DonationFileReader.readFile();
 
         FoodsRepository foodsRepository = new FoodsRepository();
         ClothesRepository clothesRepository = new ClothesRepository();

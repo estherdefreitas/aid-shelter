@@ -11,10 +11,10 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_toileries")
-public class Toileries implements Serializable, Item {
+public class Toileries extends Item implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -30,13 +30,4 @@ public class Toileries implements Serializable, Item {
         this.type = type;
     }
 
-    @Override
-    public String getDescription() {
-        return "";
-    }
-
-    @Override
-    public void setDescription(String description) {
-
-    }
 }

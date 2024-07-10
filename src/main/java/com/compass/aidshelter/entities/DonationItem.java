@@ -23,5 +23,7 @@ public class DonationItem implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-
+    public DonationItem(Long id) {
+        this.id = id;
+    }
 }
