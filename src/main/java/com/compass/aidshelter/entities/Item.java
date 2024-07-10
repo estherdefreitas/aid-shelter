@@ -1,4 +1,4 @@
-package entities;
+package com.compass.aidshelter.entities;
 
 
 public interface Item {

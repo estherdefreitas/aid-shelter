@@ -1,9 +1,9 @@
-package entities;
+package com.compass.aidshelter.entities;
 
 
-import entities.enums.ClothesGender;
-import entities.enums.ClothesSize;
-import entities.enums.ClothesType;
+import com.compass.aidshelter.entities.enums.ClothesGender;
+import com.compass.aidshelter.entities.enums.ClothesSize;
+import com.compass.aidshelter.entities.enums.ClothesType;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package entities.enums;
+package com.compass.aidshelter.entities.enums;
 
 import lombok.Getter;
 

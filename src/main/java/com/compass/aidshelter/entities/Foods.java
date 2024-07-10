@@ -1,4 +1,4 @@
-package entities;
+package com.compass.aidshelter.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

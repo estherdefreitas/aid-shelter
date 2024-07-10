@@ -1,6 +1,5 @@
-package repositories;
+package com.compass.aidshelter.repositories;
 
-import entities.Clothes;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -8,41 +7,41 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class ClothesRepository {
+public abstract class Repository<T> {
     private final EntityManagerFactory emf;
     private final EntityManager em;
+    private final Class<T> clasz;
 
-    public ClothesRepository() {
+    public Repository(Class<T> clasz) {
+        this.clasz = clasz;
         emf = Persistence.createEntityManagerFactory("aidShelterPU");
         em = emf.createEntityManager();
     }
-
-    public void addClothes(Clothes clothes) {
+    public void add(T object){
         em.getTransaction().begin();
-        em.persist(clothes);
+        em.persist(object);
         em.getTransaction().commit();
     }
-
-    public Clothes findClothesById(Long id) {
-        return em.find(Clothes.class, id);
+    public T findById(Long id) {
+        return em.find(clasz, id);
     }
 
-    public List<Clothes> findAllClothes() {
-        TypedQuery<Clothes> query = em.createQuery("SELECT c FROM Clothes c", Clothes.class);
+    public List<T> findAll() {
+        TypedQuery<T> query = em.createQuery("SELECT o FROM "+clasz.getName()+" o", clasz);
         return query.getResultList();
     }
 
-    public void updateClothes(Clothes clothes) {
+    public void update(T object) {
         em.getTransaction().begin();
-        em.merge(clothes);
+        em.merge(object);
         em.getTransaction().commit();
     }
 
-    public void deleteClothes(Long id) {
+    public void delete(Long id) {
         em.getTransaction().begin();
-        Clothes clothes = em.find(Clothes.class, id);
-        if (clothes != null) {
-            em.remove(clothes);
+        T object = em.find(clasz, id);
+        if (object != null) {
+            em.remove(object);
         }
         em.getTransaction().commit();
     }

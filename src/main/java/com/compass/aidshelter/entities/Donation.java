@@ -1,20 +1,24 @@
-package entities;
+package com.compass.aidshelter.entities;
 
-import entities.enums.ToileriesType;
+
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_toileries")
-public class Toileries implements Serializable, Item {
+@Table(name = "tb_donation")
+public class Donation implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -23,15 +27,8 @@ public class Toileries implements Serializable, Item {
     @EqualsAndHashCode.Include
     private Long id;
 
-    private ToileriesType type;
 
-    @Override
-    public String getDescription() {
-        return "";
-    }
+    //private Set<DonationItem> items = new HashSet<>();
 
-    @Override
-    public void setDescription(String description) {
 
-    }
 }
