@@ -7,9 +7,9 @@ import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public abstract class Repository<T> {
-    private final EntityManagerFactory emf;
-    private final EntityManager em;
+public abstract class Repository<T,U> {
+    protected final EntityManagerFactory emf;
+    protected final EntityManager em;
     private final Class<T> clasz;
 
     public Repository(Class<T> clasz) {
@@ -17,12 +17,14 @@ public abstract class Repository<T> {
         emf = Persistence.createEntityManagerFactory("aidShelterPU");
         em = emf.createEntityManager();
     }
-    public void add(T object){
+    public void save(T object){
         em.getTransaction().begin();
         em.persist(object);
         em.getTransaction().commit();
     }
-    public T findById(Long id) {
+
+
+    public T findById(U id) {
         return em.find(clasz, id);
     }
 

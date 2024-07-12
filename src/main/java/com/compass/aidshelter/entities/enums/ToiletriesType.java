@@ -4,20 +4,20 @@ package com.compass.aidshelter.entities.enums;
 import lombok.Getter;
 
 @Getter
-public enum ToileriesType {
-    SOAP(1),
-    TOOTHPASTE(2),
-    TOOTHBRUSH(3),
-    TAMPONS(4);
+public enum ToiletriesType {
+    SABONETE(1),
+    PASTA_DE_DENTE(2),
+    ESCOVA_DE_DENTE(3),
+    ABSORVENTES(4);
 
     private final int typeCode;
 
-    ToileriesType(final int typeCode) {
+    ToiletriesType(final int typeCode) {
         this.typeCode = typeCode;
     }
 
-    public static ToileriesType valueOf(int typeCode) {
-        for (ToileriesType t : ToileriesType.values()) {
+    public static ToiletriesType valueOf(int typeCode) {
+        for (ToiletriesType t : ToiletriesType.values()) {
             if (t.getTypeCode() == typeCode){
                 return t;
             }

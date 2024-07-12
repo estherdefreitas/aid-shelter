@@ -5,33 +5,48 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_foods")
-public class Foods extends Item  implements Serializable {
+public class Foods extends Item implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
-    private Long id;
+    private String id;
 
     private Integer quantity;
     private String unitMeasure;
-    private Date expirationDate;
 
-    public Foods(Long id, Integer quantity, String unitMeasure, Date expirationDate) {
-        this.id = id;
+    public Foods(String description, Integer quantity, String unitMeasure) {
+        super(description);
+        this.id = description + quantity.toString() + unitMeasure;
         this.quantity = quantity;
         this.unitMeasure = unitMeasure;
-        this.expirationDate = expirationDate;
     }
 
+    @Override
+    public void setDescription(String description) {
+        super.setDescription(description);
+        this.id = description + quantity.toString() + unitMeasure;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+        this.id = this.getDescription() + quantity.toString() + unitMeasure;
+    }
+
+    public void setUnitMeasure(String unitMeasure) {
+        this.unitMeasure = unitMeasure;
+        this.id = this.getDescription() + quantity.toString() + unitMeasure;
+    }
+
+    @Override
+    public String getId() {
+        return getDescription() + this.getQuantity().toString() + this.getUnitMeasure();
+    }
 }

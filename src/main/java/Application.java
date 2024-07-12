@@ -1,46 +1,31 @@
-
 import com.compass.aidshelter.config.DbConfig;
-import com.compass.aidshelter.entities.Clothes;
-import com.compass.aidshelter.entities.Foods;
-import com.compass.aidshelter.entities.Toileries;
-import com.compass.aidshelter.entities.enums.ClothesGender;
-import com.compass.aidshelter.entities.enums.ClothesSize;
-import com.compass.aidshelter.entities.enums.ClothesType;
-import com.compass.aidshelter.entities.enums.ToileriesType;
-import com.compass.aidshelter.input.DonationFileReader;
 import com.compass.aidshelter.repositories.ClothesRepository;
+import com.compass.aidshelter.repositories.DistributionCenterRepository;
 import com.compass.aidshelter.repositories.FoodsRepository;
-import com.compass.aidshelter.repositories.ToileriesRepository;
+import com.compass.aidshelter.repositories.ToiletriesRepository;
+import com.compass.aidshelter.services.DistributionCenterService;
+import com.compass.aidshelter.services.DonationService;
+import com.opencsv.exceptions.CsvException;
 
-import java.time.Instant;
-import java.util.Date;
+import java.io.IOException;
 
 
 public class Application {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException, CsvException {
 
         DbConfig.build();
 
-        DonationFileReader.readFile();
 
-        FoodsRepository foodsRepository = new FoodsRepository();
+        DistributionCenterService distributionCenterService = new DistributionCenterService(args[1]);
+
         ClothesRepository clothesRepository = new ClothesRepository();
-        ToileriesRepository toileriesRepository = new ToileriesRepository();
+        FoodsRepository foodsRepository = new FoodsRepository();
+        ToiletriesRepository toiletriesRepository = new ToiletriesRepository();
+        DistributionCenterRepository DistributionCenterRepository = new DistributionCenterRepository();
 
-        Foods f1 = new Foods(null,2,"kg", Date.from(Instant.now()));
-        foodsRepository.add(f1);
-        System.out.println(foodsRepository.findAll());
-        foodsRepository.close();
+        DonationService donationService = new DonationService(clothesRepository, foodsRepository, toiletriesRepository, DistributionCenterRepository);
 
-        Clothes c1 = new Clothes(null, ClothesType.AGASALHO, ClothesSize.G, ClothesGender.F);
-        clothesRepository.add(c1);
-        System.out.println(clothesRepository.findAll());
-        clothesRepository.close();
-
-        Toileries t1 = new Toileries(null, ToileriesType.SOAP);
-        toileriesRepository.add(t1);
-        System.out.println(toileriesRepository.findAll());
-        toileriesRepository.close();
+        donationService.saveDonations(args[0]);
 
         Thread.sleep(99999);
 

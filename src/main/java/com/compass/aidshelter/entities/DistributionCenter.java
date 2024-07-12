@@ -1,18 +1,18 @@
 package com.compass.aidshelter.entities;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "tb_distribution_center")
 public class DistributionCenter implements Serializable {
@@ -36,4 +36,8 @@ public class DistributionCenter implements Serializable {
         this.responsible = responsible;
         this.phone = phone;
     }
+
+    @OneToMany(mappedBy = "donationItemPk.distributionCenter", cascade = CascadeType.ALL)
+    private List<DonationItem> donationItems = new ArrayList<>();
+
 }

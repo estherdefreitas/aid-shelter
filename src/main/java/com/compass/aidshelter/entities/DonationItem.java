@@ -1,6 +1,7 @@
 package com.compass.aidshelter.entities;
 
 
+import com.compass.aidshelter.entities.pk.DonationItemPk;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,19 +12,25 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
 @Table(name = "tb_donation_item")
+@Entity
+@IdClass(DonationItemPk.class)
 public class DonationItem implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
-    private Long id;
+    @EmbeddedId
+    private DonationItemPk donationItemPk;
 
-    public DonationItem(Long id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @MapsId("distributionCenterId")
+    private DistributionCenter distributionCenter;
+
+    @ManyToOne
+    @MapsId("itemId")
+    private Item item;
+
+    private Integer quantity;
 }

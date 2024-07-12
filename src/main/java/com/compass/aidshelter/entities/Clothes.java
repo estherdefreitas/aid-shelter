@@ -3,7 +3,6 @@ package com.compass.aidshelter.entities;
 
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
-import com.compass.aidshelter.entities.enums.ClothesType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +13,6 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_clothes")
 public class Clothes extends Item implements Serializable{
@@ -22,22 +20,32 @@ public class Clothes extends Item implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
-    private Long id;
+    private String id;
 
-    private ClothesType name;
-
+    @Enumerated(EnumType.STRING)
     private ClothesSize size;
 
+    @Enumerated(EnumType.STRING)
     private ClothesGender gender;
 
-    public Clothes(Long id, ClothesType name, ClothesSize size, ClothesGender gender) {
-        this.id = id;
-        this.name = name;
+    public Clothes(String description, ClothesSize size, ClothesGender gender) {
+        super(description);
+        this.id = description + size.name() + gender.name();
         this.size = size;
         this.gender = gender;
     }
 
+    public void setSize(ClothesSize size) {
+        this.size = size;
+        this.id = this.getDescription() + this.getSize().name() + this.getGender().name();
+    }
+    public void setGender(ClothesGender gender) {
+        this.gender = gender;
+        this.id = this.getDescription() + this.getSize() + this.getGender().name();
+    }
 
+    @Override
+    public String getId() {
+        return this.getDescription() + this.getSize().name() + this.getGender().name();
+    }
 }

@@ -6,14 +6,16 @@
     <persistence-unit name="aidShelterPU">
         <class>com.compass.aidshelter.entities.Foods</class>
         <class>com.compass.aidshelter.entities.Clothes</class>
-        <class>com.compass.aidshelter.entities.Toileries</class>
+        <class>com.compass.aidshelter.entities.Toiletries</class>
         <class>com.compass.aidshelter.entities.DistributionCenter</class>
+        <class>com.compass.aidshelter.entities.Item</class>
+        <class>com.compass.aidshelter.entities.DonationItem</class>
+        <class>com.compass.aidshelter.entities.pk.DonationItemPk</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="${jdbc.url}"/>
             <property name="jakarta.persistence.jdbc.user" value="${jdbc.user}"/>
             <property name="jakarta.persistence.jdbc.password" value="${jdbc.password}"/>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.show_sql" value="true"/>
