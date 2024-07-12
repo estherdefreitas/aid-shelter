@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,6 +29,11 @@ public class DistributionCenter implements Serializable {
     private String address;
     private String responsible;
     private String phone;
+
+    @OneToMany(mappedBy = "distributionCenter")
+    private List<Donation> donations;
+
+
 
     public DistributionCenter(Long id, String name, String address, String responsible, String phone) {
         this.id = id;

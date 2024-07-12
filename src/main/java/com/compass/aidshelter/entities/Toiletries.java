@@ -23,9 +23,11 @@ public class Toiletries extends Item implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private ToiletriesType type;
 
-    public Toiletries(Long id, ToiletriesType type) {
+    public Toiletries(Long id, String description, ToiletriesType type) {
+        super.setDescription(description);
         this.id = id;
         this.type = type;
     }

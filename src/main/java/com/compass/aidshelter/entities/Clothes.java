@@ -25,15 +25,15 @@ public class Clothes extends Item implements Serializable{
     @EqualsAndHashCode.Include
     private Long id;
 
-    private String name;
-
+    @Enumerated(EnumType.STRING)
     private ClothesSize size;
 
+    @Enumerated(EnumType.STRING)
     private ClothesGender gender;
 
-    public Clothes(Long id, String name, ClothesSize size, ClothesGender gender) {
+    public Clothes(Long id, String description, ClothesSize size, ClothesGender gender) {
+        super.setDescription(description);
         this.id = id;
-        this.name = name;
         this.size = size;
         this.gender = gender;
     }
