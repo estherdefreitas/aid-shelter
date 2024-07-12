@@ -4,6 +4,7 @@ import com.compass.aidshelter.repositories.DistributionCenterRepository;
 import com.compass.aidshelter.repositories.FoodsRepository;
 import com.compass.aidshelter.repositories.ToiletriesRepository;
 import com.compass.aidshelter.services.DistributionCenterService;
+import com.compass.aidshelter.services.DonationService;
 
 public class Application {
     public static void main(String[] args) throws InterruptedException {
@@ -18,6 +19,9 @@ public class Application {
         DistributionCenterService distributionCenterService = new DistributionCenterService(distributionCenterRepository);
         distributionCenterService.saveDistributionCenter(args[0]);
 
+
+        DonationService donationService = new DonationService(clothesRepository, foodsRepository, toiletriesRepository, distributionCenterRepository);
+        donationService.saveDonations(args[1]);
 
         Thread.sleep(99999);
 
