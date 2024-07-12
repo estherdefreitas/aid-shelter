@@ -17,7 +17,7 @@ public abstract class Repository<T> {
         emf = Persistence.createEntityManagerFactory("aidShelterPU");
         em = emf.createEntityManager();
     }
-    public void add(T object){
+    public void save(T object){
         em.getTransaction().begin();
         em.persist(object);
         em.getTransaction().commit();

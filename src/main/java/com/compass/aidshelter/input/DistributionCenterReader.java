@@ -3,7 +3,6 @@ package com.compass.aidshelter.input;
 import com.compass.aidshelter.entities.DistributionCenter;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,7 +14,7 @@ public class DistributionCenterReader {
     public static List<DistributionCenter> readDistributionCenters(String csvFilePath) throws IOException, CsvException {
         List<DistributionCenter> distributionCenters = new ArrayList<>();
         try (CSVReader csvReader = new CSVReader(new FileReader(csvFilePath, StandardCharsets.UTF_8))) {
-            String[] values;
+            String[] values = csvReader.readNext();
             while ((values = csvReader.readNext()) != null) {
                 Long id = null;
                 String name = values[0];
