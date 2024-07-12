@@ -3,7 +3,6 @@ package com.compass.aidshelter.entities;
 
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
-import com.compass.aidshelter.entities.enums.ClothesType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,13 +25,13 @@ public class Clothes extends Item implements Serializable{
     @EqualsAndHashCode.Include
     private Long id;
 
-    private ClothesType name;
+    private String name;
 
     private ClothesSize size;
 
     private ClothesGender gender;
 
-    public Clothes(Long id, ClothesType name, ClothesSize size, ClothesGender gender) {
+    public Clothes(Long id, String name, ClothesSize size, ClothesGender gender) {
         this.id = id;
         this.name = name;
         this.size = size;
