@@ -1,6 +1,6 @@
 package com.compass.aidshelter.entities;
 
-import com.compass.aidshelter.entities.enums.ToileriesType;
+import com.compass.aidshelter.entities.enums.ToiletriesType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,8 +13,8 @@ import java.io.Serializable;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
-@Table(name = "tb_toileries")
-public class Toileries extends Item implements Serializable {
+@Table(name = "tb_toiletries")
+public class Toiletries extends Item implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -23,9 +23,9 @@ public class Toileries extends Item implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    private ToileriesType type;
+    private ToiletriesType type;
 
-    public Toileries(Long id, ToileriesType type) {
+    public Toiletries(Long id, ToiletriesType type) {
         this.id = id;
         this.type = type;
     }

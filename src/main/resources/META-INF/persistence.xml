@@ -6,7 +6,7 @@
     <persistence-unit name="aidShelterPU">
         <class>com.compass.aidshelter.entities.Foods</class>
         <class>com.compass.aidshelter.entities.Clothes</class>
-        <class>com.compass.aidshelter.entities.Toileries</class>
+        <class>com.compass.aidshelter.entities.Toiletries</class>
         <class>com.compass.aidshelter.entities.DistributionCenter</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="${jdbc.url}"/>
