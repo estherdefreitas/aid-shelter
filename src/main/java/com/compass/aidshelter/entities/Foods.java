@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -25,9 +25,10 @@ public class Foods extends Item  implements Serializable {
 
     private Integer quantity;
     private String unitMeasure;
-    private Date expirationDate;
+    private LocalDate expirationDate;
 
-    public Foods(Long id, Integer quantity, String unitMeasure, Date expirationDate) {
+    public Foods(Long id, String description, Integer quantity, String unitMeasure, LocalDate expirationDate) {
+        super.setDescription(description);
         this.id = id;
         this.quantity = quantity;
         this.unitMeasure = unitMeasure;

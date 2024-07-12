@@ -8,6 +8,8 @@
         <class>com.compass.aidshelter.entities.Clothes</class>
         <class>com.compass.aidshelter.entities.Toiletries</class>
         <class>com.compass.aidshelter.entities.DistributionCenter</class>
+        <class>com.compass.aidshelter.entities.Donation</class>
+        <class>com.compass.aidshelter.entities.Item</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="${jdbc.url}"/>
             <property name="jakarta.persistence.jdbc.user" value="${jdbc.user}"/>

@@ -5,25 +5,10 @@ import lombok.Getter;
 
 @Getter
 public enum ToiletriesType {
-    SOAP(1),
-    TOOTHPASTE(2),
-    TOOTHBRUSH(3),
-    TAMPONS(4);
-
-    private final int typeCode;
-
-    ToiletriesType(final int typeCode) {
-        this.typeCode = typeCode;
-    }
-
-    public static ToiletriesType valueOf(int typeCode) {
-        for (ToiletriesType t : ToiletriesType.values()) {
-            if (t.getTypeCode() == typeCode){
-                return t;
-            }
-        }
-        throw new IllegalArgumentException("Invalid typeCode: " + typeCode);
-    }
+    SABONETE,
+    PASTA_DE_DENTE,
+    ESCOVA_DE_DENTE,
+    ABSORVENTE;
 
 
 }

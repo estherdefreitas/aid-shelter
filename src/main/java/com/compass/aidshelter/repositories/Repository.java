@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class Repository<T> {
     private final EntityManagerFactory emf;
-    private final EntityManager em;
+    protected final EntityManager em;
     private final Class<T> clasz;
 
     public Repository(Class<T> clasz) {

@@ -2,19 +2,15 @@ package com.compass.aidshelter.entities;
 
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_donation")
@@ -28,7 +24,20 @@ public class Donation implements Serializable {
     private Long id;
 
 
-    //private Set<DonationItem> items = new HashSet<>();
+    @ManyToOne
+    private DistributionCenter distributionCenter;
+
+    private int quantity;
+
+    @ManyToOne
+    private Foods foods;
+    @ManyToOne
+    private Clothes clothes;
+    @ManyToOne
+    private Toiletries toiletries;
+
+
+
 
 
 }

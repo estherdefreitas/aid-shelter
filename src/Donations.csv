@@ -1,0 +1,5 @@
+destination,itemType,description,quantityItem,size,gender,unitMeasure,quantityFood,expirationDate,typeToiletries
+1,higiene,sabonete,3,,,,,,SABONETE
+3,comida,arroz,30,,,kg,5,21-05-2027,
+2,higiene,pasta de dente,7,,,,,,pasta de dente
+1,roupa,agasalho,20,G,F,,,,
