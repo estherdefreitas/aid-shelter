@@ -10,5 +10,13 @@ public enum ToiletriesType {
     ESCOVA_DE_DENTE,
     ABSORVENTE;
 
+    public static boolean isValidToiletriesType(String value) {
+        try {
+            ToiletriesType.valueOf(value.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 
 }

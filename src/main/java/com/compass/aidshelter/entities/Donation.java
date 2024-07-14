@@ -38,6 +38,4 @@ public class Donation implements Serializable {
 
 
 
-
-
 }
