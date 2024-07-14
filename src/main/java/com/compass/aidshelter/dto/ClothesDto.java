@@ -17,6 +17,11 @@ public class ClothesDto {
     private String size;
     private String gender;
 
+public ClothesDto (Clothes entity) {
+    this.description = entity.getDescription();
+    this.size = entity.getSize().name();
+    this.gender = entity.getGender().name();
+}
 
     public Clothes toEntity(Long id) {
         return new Clothes(id, description, ClothesSize.valueOf(size), ClothesGender.valueOf(gender));

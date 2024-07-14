@@ -6,7 +6,6 @@ import com.compass.aidshelter.entities.*;
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
 import com.compass.aidshelter.entities.enums.ToiletriesType;
-import com.compass.aidshelter.input.DonationReader;
 import com.compass.aidshelter.repositories.*;
 import com.compass.aidshelter.services.DistributionCenterService;
 import com.compass.aidshelter.services.DonationService;
@@ -55,7 +54,6 @@ public class Application {
             option = scanner.nextInt();
             int itemOption = -1;
             scanner.nextLine();
-            String inputString;
             Long distributionCenterId;
             long donationId;
             switch (option) {
@@ -81,7 +79,7 @@ public class Application {
                                             "Informe a quantidade de roupas:",
                                             scanner
                                     );
-                                    donationService.clothesDonation(
+                                    donationService.saveClothesDonation(
                                             getDonationClothesDto(scanner),
                                             distributionCenterRepository.findById(distributionCenterId),
                                             itemQuantity
@@ -94,7 +92,7 @@ public class Application {
                                             "Informe a quantidade de produtos de higiene:",
                                             scanner
                                     );
-                                    donationService.toiletriesDonation(
+                                    donationService.saveToiletriesDonation(
                                             getDonationToiletriesDto(scanner),
                                             distributionCenterRepository.findById(distributionCenterId),
                                             itemQuantity
@@ -105,7 +103,7 @@ public class Application {
                                             "Informe quantas comidas embaladas:",
                                             scanner
                                     );
-                                    donationService.foodsDonation(
+                                    donationService.saveFoodsDonation(
                                             getDonationFoodsDto(scanner),
                                             distributionCenterRepository.findById(distributionCenterId),
                                             itemQuantity
@@ -129,7 +127,12 @@ public class Application {
                     Donation donation = donationRepository.findById(donationId);
                     switch (itemOption){
                         case 1:
-                            donation.setQuantity(getInt("Informe o novo valor:", scanner));
+                            int newQuantity = getInt("Informe o novo valor:", scanner);
+                            if(donationService.canDistributionCenterReceiveItemOfType(getDonationType(donation), newQuantity)){
+                                donation.setQuantity(newQuantity);
+                            } else {
+                                System.out.println("Limite de itens excedido para esse centro de distribuição.\n");
+                            }
                             break;
                         case 2:
                             donation.setDistributionCenter(distributionCenterRepository
@@ -188,6 +191,17 @@ public class Application {
             distributionCenterRepository.close();
 
         }
+
+    private static String getDonationType(Donation donation) {
+        if(donation.getClothes() != null) {
+            return "roupa";
+        } else if (donation.getFoods() != null) {
+            return "comida";
+        } else if (donation.getToiletries() != null) {
+            return "higiene";
+        }
+        throw new IllegalArgumentException("Não foi possível distinguir qual o tipo da doação, todos os valores estão nulos");
+    }
 
     private static ToiletriesDto getDonationToiletriesDto(Scanner scanner) {
         return new ToiletriesDto(getString("Informe a descrição do produto de higiene:", scanner), getValidToiletriesType(scanner));

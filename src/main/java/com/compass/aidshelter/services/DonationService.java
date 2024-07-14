@@ -47,41 +47,13 @@ public class DonationService {
             }
             switch (donationDto.itemType()) {
                 case "roupa":
-//                    clothesDonation(new ClothesDto(donationDto.description(),donationDto.size(),donationDto.gender()),distributionCenter, donationDto.quantityItem());
-                    if(donationRepository.findAll().stream().filter(item -> item.getClothes() != null).count() < threshold) {
-                        Optional<Clothes> optionalClothes = clothesRepository.findByValues(donationDto.description(), ClothesSize.valueOf(donationDto.size()), ClothesGender.valueOf(donationDto.gender()));
-                        if(optionalClothes.isEmpty()) {
-                            Clothes clothes = new Clothes(null, donationDto.description(), ClothesSize.valueOf(donationDto.size()), ClothesGender.valueOf(donationDto.gender()));
-                            clothesRepository.save(clothes);
-                            optionalClothes = clothesRepository.findByValues(donationDto.description(), ClothesSize.valueOf(donationDto.size()), ClothesGender.valueOf(donationDto.gender()));
-                        }
-                        donation = new Donation((Long) null, distributionCenter, donationDto.quantityItem(), null,optionalClothes.get(),null);
-                        donationRepository.save(donation);
-                    }
+                    saveClothesDonation(donationDto.toClothesDto(), distributionCenter, donationDto.quantityItem());
                     break;
                 case "comida":
-                    if(donationRepository.findAll().stream().filter(item -> item.getFoods() != null).count() < threshold) {
-                        Optional<Foods> optionalFoods = foodsRepository.findByValues(donationDto.description(),donationDto.quantityFood(),donationDto.unitMeasure(),donationDto.expirationDate());
-                        if(optionalFoods.isEmpty()) {
-                            Foods foods = new Foods(null,donationDto.description(),donationDto.quantityFood(),donationDto.unitMeasure(),donationDto.expirationDate());
-                            foodsRepository.save(foods);
-                            optionalFoods = foodsRepository.findByValues(donationDto.description(),donationDto.quantityFood(),donationDto.unitMeasure(),donationDto.expirationDate());
-                        }
-                        donation = new Donation(null, distributionCenter, donationDto.quantityItem(), optionalFoods.get(), null, null);
-                        donationRepository.save(donation);
-                    }
+                    saveFoodsDonation(donationDto.toFoodsDto(), distributionCenter, donationDto.quantityItem());
                     break;
                 case "higiene":
-                    if(donationRepository.findAll().stream().filter(item -> item.getToiletries() != null).count() < threshold) {
-                        Optional<Toiletries> optionalToiletries = toiletriesRepository.findByValues(donationDto.description(), ToiletriesType.valueOf(donationDto.typeToiletries().replace(" ", "_").toUpperCase()));
-                        if (optionalToiletries.isEmpty()) {
-                            Toiletries toiletries = new Toiletries(null, donationDto.description(), ToiletriesType.valueOf(donationDto.typeToiletries().replace(" ", "_").toUpperCase()));
-                            toiletriesRepository.save(toiletries);
-                            optionalToiletries = toiletriesRepository.findByValues(donationDto.description(), ToiletriesType.valueOf(donationDto.typeToiletries().replace(" ", "_").toUpperCase()));
-                        }
-                        donation = new Donation(null, distributionCenter, donationDto.quantityItem(), null, null, optionalToiletries.get());
-                        donationRepository.save(donation);
-                    }
+                    saveToiletriesDonation(donationDto.toToiletriesDto(), distributionCenter, donationDto.quantityItem());
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown item type: " + donationDto.itemType());
@@ -89,8 +61,8 @@ public class DonationService {
 
         }
     }
-    public void clothesDonation(ClothesDto donationDto, DistributionCenter distributionCenter, Integer quantity){
-        if(donationRepository.findAll().stream().filter(item -> item.getClothes() != null).count() < threshold) {
+    public void saveClothesDonation(ClothesDto donationDto, DistributionCenter distributionCenter, Integer quantity){
+        if(canDistributionCenterReceiveItemOfType("roupa", quantity)) {
             Optional<Clothes> optionalClothes = clothesRepository.findByValues(donationDto.getDescription(), ClothesSize.valueOf(donationDto.getSize()), ClothesGender.valueOf(donationDto.getGender()));
             if(optionalClothes.isEmpty()) {
                 Clothes clothes = new Clothes(null, donationDto.getDescription(), ClothesSize.valueOf(donationDto.getSize()), ClothesGender.valueOf(donationDto.getGender()));
@@ -100,11 +72,14 @@ public class DonationService {
             Donation donation = new Donation((Long) null, distributionCenter, quantity, null,optionalClothes.get(),null);
             donationRepository.save(donation);
         }
-
     }
 
-    public void foodsDonation(FoodsDto donationDto, DistributionCenter distributionCenter, Integer quantity){
-        if(donationRepository.findAll().stream().filter(item -> item.getFoods() != null).count() < threshold) {
+    public boolean canDistributionCenterReceiveItemOfType(String type, Integer quantity) {
+        return (donationRepository.countAllDonationsByType(type) + quantity) < threshold;
+    }
+
+    public void saveFoodsDonation(FoodsDto donationDto, DistributionCenter distributionCenter, Integer quantity){
+        if(canDistributionCenterReceiveItemOfType("comida", quantity)) {
             Optional<Foods> optionalFoods = foodsRepository.findByValues(donationDto.getDescription(),donationDto.getQuantityFood(),donationDto.getUnitMeasure(),donationDto.getExpirationDate());
             if(optionalFoods.isEmpty()) {
                 Foods foods = new Foods(null,donationDto.getDescription(),donationDto.getQuantityFood(),donationDto.getUnitMeasure(),donationDto.getExpirationDate());
@@ -117,8 +92,8 @@ public class DonationService {
 
     }
 
-    public void toiletriesDonation(ToiletriesDto toiletriesDto, DistributionCenter distributionCenter, Integer quantity){
-        if(donationRepository.findAll().stream().filter(item -> item.getToiletries() != null).count() < threshold) {
+    public void saveToiletriesDonation(ToiletriesDto toiletriesDto, DistributionCenter distributionCenter, Integer quantity){
+        if(canDistributionCenterReceiveItemOfType("higiene", quantity)) {
             Optional<Toiletries> optionalToiletries = toiletriesRepository.findByValues(toiletriesDto.getDescription(), ToiletriesType.valueOf(toiletriesDto.getTypeToiletries().replace(" ", "_").toUpperCase()));
             if (optionalToiletries.isEmpty()) {
                 Toiletries toiletries = new Toiletries(null, toiletriesDto.getDescription(), ToiletriesType.valueOf(toiletriesDto.getTypeToiletries().replace(" ", "_").toUpperCase()));
