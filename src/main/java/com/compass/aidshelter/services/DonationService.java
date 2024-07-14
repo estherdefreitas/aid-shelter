@@ -3,6 +3,7 @@ package com.compass.aidshelter.services;
 import com.compass.aidshelter.dto.ClothesDto;
 import com.compass.aidshelter.dto.DonationDto;
 import com.compass.aidshelter.dto.FoodsDto;
+import com.compass.aidshelter.dto.ToiletriesDto;
 import com.compass.aidshelter.entities.*;
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
@@ -111,6 +112,20 @@ public class DonationService {
                 optionalFoods = foodsRepository.findByValues(donationDto.getDescription(),donationDto.getQuantityFood(),donationDto.getUnitMeasure(),donationDto.getExpirationDate());
             }
             Donation donation = new Donation(null, distributionCenter, quantity, optionalFoods.get(), null, null);
+            donationRepository.save(donation);
+        }
+
+    }
+
+    public void toiletriesDonation(ToiletriesDto toiletriesDto, DistributionCenter distributionCenter, Integer quantity){
+        if(donationRepository.findAll().stream().filter(item -> item.getToiletries() != null).count() < threshold) {
+            Optional<Toiletries> optionalToiletries = toiletriesRepository.findByValues(toiletriesDto.getDescription(), ToiletriesType.valueOf(toiletriesDto.getTypeToiletries().replace(" ", "_").toUpperCase()));
+            if (optionalToiletries.isEmpty()) {
+                Toiletries toiletries = new Toiletries(null, toiletriesDto.getDescription(), ToiletriesType.valueOf(toiletriesDto.getTypeToiletries().replace(" ", "_").toUpperCase()));
+                toiletriesRepository.save(toiletries);
+                optionalToiletries = toiletriesRepository.findByValues(toiletriesDto.getDescription(), ToiletriesType.valueOf(toiletriesDto.getTypeToiletries().replace(" ", "_").toUpperCase()));
+            }
+            Donation donation = new Donation(null, distributionCenter, quantity, null, null, optionalToiletries.get());
             donationRepository.save(donation);
         }
 

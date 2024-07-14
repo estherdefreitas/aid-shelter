@@ -1,9 +1,11 @@
 import com.compass.aidshelter.config.DbConfig;
 import com.compass.aidshelter.dto.ClothesDto;
 import com.compass.aidshelter.dto.FoodsDto;
+import com.compass.aidshelter.dto.ToiletriesDto;
 import com.compass.aidshelter.entities.DistributionCenter;
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
+import com.compass.aidshelter.entities.enums.ToiletriesType;
 import com.compass.aidshelter.repositories.*;
 import com.compass.aidshelter.services.DistributionCenterService;
 import com.compass.aidshelter.services.DonationService;
@@ -98,8 +100,20 @@ public class Application {
 
                                 break;
                             case 2:
-
-
+                                ToiletriesDto newToiletries = new ToiletriesDto();
+                                System.out.println("Informe a quantidade de produtos de higiene:");
+                                itemQuantity = scanner.nextInt();
+                                scanner.nextLine();
+                                System.out.println("Informe a descrição do produto de higiene:");
+                                newToiletries.setDescription(scanner.nextLine());
+                                System.out.println("Informe o tipo de produto de higiene " + Arrays.toString(ToiletriesType.values()) + ":");
+                                inputString = scanner.nextLine();
+                                while (!ToiletriesType.isValidToiletriesType(inputString)){
+                                    System.out.println("Informe um tipo de produto de higiene válido! " + Arrays.toString(ToiletriesType.values()) + ":");
+                                    inputString = scanner.nextLine();
+                                }
+                                newToiletries.setTypeToiletries(inputString.toUpperCase());
+                                donationService.toiletriesDonation(newToiletries, distributionCenterRepository.findById(distributionCenterId), itemQuantity);
                                 break;
                             case 3:
                                 FoodsDto newFoods = new FoodsDto();
