@@ -1,5 +1,6 @@
 package com.compass.aidshelter.dto;
 
+import com.compass.aidshelter.entities.Foods;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,8 @@ public class FoodsDto {
     private Integer quantityFood;
     private String unitMeasure;
     private LocalDate expirationDate;
+
+    public Foods toEntity(Long id) {
+        return new Foods(id, description, quantityFood, unitMeasure, expirationDate);
+    }
 }

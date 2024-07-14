@@ -37,6 +37,4 @@ public class Clothes extends Item implements Serializable{
         this.size = size;
         this.gender = gender;
     }
-
-
 }
