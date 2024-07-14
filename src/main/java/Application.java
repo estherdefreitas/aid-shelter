@@ -11,14 +11,15 @@ import com.compass.aidshelter.repositories.*;
 import com.compass.aidshelter.services.DistributionCenterService;
 import com.compass.aidshelter.services.DonationService;
 import com.compass.aidshelter.services.ShelterService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Application {
@@ -33,6 +34,9 @@ public class Application {
         DistributionCenterRepository distributionCenterRepository = new DistributionCenterRepository();
         DonationRepository donationRepository = new DonationRepository();
         ShelterRepository shelterRepository = new ShelterRepository();
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
 
         DistributionCenterService distributionCenterService = new DistributionCenterService(distributionCenterRepository);
         distributionCenterService.saveDistributionCenter(args[0]);
@@ -191,12 +195,23 @@ public class Application {
                             getString("Informe o nome do responsável pelo abrigo", scanner),
                             getString("Informe o telefone do abrigo", scanner),
                             getString("Informe o email do abrigo", scanner),
-                            getString("Informe a capacidade de armazenamento do abrigo", scanner)
+                            getString("Informe a capacidade do abrigo", scanner),
+                            getString("Informe a porcentagem de ocupação do abrigo ",scanner)
                             );
-                    shelterService.saveShelter(shelterDto);
+                    Set<ConstraintViolation<ShelterDto>> violations = validator.validate(shelterDto);
+
+                    if (!violations.isEmpty()) {
+                        for (ConstraintViolation<ShelterDto> violation : violations) {
+                            System.out.println(violation.getMessage());
+                        }
+                    } else {
+                        shelterService.saveShelter(shelterDto);
+                    }
+                    break;
                 case 6:
                     System.out.println("Abrigos cadastrados:\n");
                     printShelters(shelterRepository.findAll());
+                    break;
                 case 7:
                     shelterId = chooseShelterById("Qual abrigo você deseja editar?", shelterRepository, scanner);
                     Shelter shelter = shelterRepository.findById(shelterId);
@@ -207,9 +222,14 @@ public class Application {
                             getString("Responsável:", scanner),
                             getString("Telefone:", scanner),
                             getString("Email:", scanner),
-                            getString("Capacidade de armazenamento:", scanner)
+                            getString("Capacidade de armazenamento:", scanner),
+                            getString("Porcentagem de ocupação:", scanner)
                     );
                     shelterRepository.update(shelter);
+                    break;
+                case 8:
+                    shelterId = chooseShelterById("Qual abrigo você deseja excluir?", shelterRepository, scanner);
+                    shelterRepository.delete(shelterId);
                     break;
 
                 case 0:
@@ -227,7 +247,7 @@ public class Application {
             foodsRepository.close();
             toiletriesRepository.close();
             distributionCenterRepository.close();
-
+            shelterRepository.close();
         }
 
     private static long chooseShelterById(String question, ShelterRepository shelterRepository, Scanner scanner) {
@@ -253,7 +273,21 @@ public class Application {
     }
 
     private static void printShelters(List<Shelter> shelters) {
-        shelters.forEach(System.out::println);
+        if (shelters.isEmpty()) {
+            System.out.println("No shelters to display.");
+        } else {
+            shelters.forEach(shelter -> {
+                System.out.println("Shelter ID: " + shelter.getId());
+                System.out.println("Name: " + shelter.getName());
+                System.out.println("Address: " + shelter.getAddress());
+                System.out.println("Responsible: " + shelter.getResponsible());
+                System.out.println("Phone: " + shelter.getPhone());
+                System.out.println("Email: " + shelter.getEmail());
+                System.out.println("Storage Capacity: " + shelter.getStorageCapacity());
+                System.out.println("Occupation Percentage: " + shelter.getOccupationPercentage());
+                System.out.println("----------");
+            });
+        }
     }
 
     private static String getDonationType(Donation donation) {

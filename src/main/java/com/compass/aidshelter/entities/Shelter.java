@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Table(name = "tb_shelter")
 @AllArgsConstructor
@@ -29,5 +30,6 @@ public class Shelter implements Serializable {
     private String phone;
     private String email;
     private String storageCapacity;
+    private String occupationPercentage;
 
 }
