@@ -19,10 +19,8 @@ public class DistributionCenterReader {
                 Long id = null;
                 String name = values[0];
                 String address = values[1];
-                String responsible = values[2];
-                String phone = values[3];
 
-                DistributionCenter distributionCenter = new DistributionCenter(id,name, address, responsible, phone);
+                DistributionCenter distributionCenter = new DistributionCenter(id,name, address);
                 distributionCenters.add(distributionCenter);
             }
         } catch (IOException | CsvException e) {

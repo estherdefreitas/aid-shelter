@@ -1,20 +1,20 @@
 package com.compass.aidshelter.entities;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+
+
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
 @Table(name = "tb_shelter")
+@AllArgsConstructor
 public class Shelter implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -22,4 +22,12 @@ public class Shelter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String name;
+    private String address;
+    private String responsible;
+    private String phone;
+    private String email;
+    private String storageCapacity;
+
 }

@@ -1,6 +1,7 @@
 import com.compass.aidshelter.config.DbConfig;
 import com.compass.aidshelter.dto.ClothesDto;
 import com.compass.aidshelter.dto.FoodsDto;
+import com.compass.aidshelter.dto.ShelterDto;
 import com.compass.aidshelter.dto.ToiletriesDto;
 import com.compass.aidshelter.entities.*;
 import com.compass.aidshelter.entities.enums.ClothesGender;
@@ -9,6 +10,7 @@ import com.compass.aidshelter.entities.enums.ToiletriesType;
 import com.compass.aidshelter.repositories.*;
 import com.compass.aidshelter.services.DistributionCenterService;
 import com.compass.aidshelter.services.DonationService;
+import com.compass.aidshelter.services.ShelterService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,13 +32,15 @@ public class Application {
         ToiletriesRepository toiletriesRepository = new ToiletriesRepository();
         DistributionCenterRepository distributionCenterRepository = new DistributionCenterRepository();
         DonationRepository donationRepository = new DonationRepository();
+        ShelterRepository shelterRepository = new ShelterRepository();
 
         DistributionCenterService distributionCenterService = new DistributionCenterService(distributionCenterRepository);
         distributionCenterService.saveDistributionCenter(args[0]);
 
-
         DonationService donationService = new DonationService(clothesRepository, foodsRepository, toiletriesRepository, distributionCenterRepository, donationRepository);
         donationService.loadDonations(args[1]);
+
+        ShelterService shelterService = new ShelterService(shelterRepository);
 
         Scanner scanner;
         scanner = new Scanner(System.in);
@@ -44,10 +48,14 @@ public class Application {
 
         while (option != 0) {
             System.out.println("=== Menu ===");
-            System.out.println("1. Cadastro de Itens Doados");
-            System.out.println("2. Leitura de Itens Doados");
-            System.out.println("3. Edição de Itens Doados");
-            System.out.println("4. Exclusão de Itens Doados");
+            System.out.println("1 - Cadastro de Itens Doados");
+            System.out.println("2 - Leitura de Itens Doados");
+            System.out.println("3 - Edição de Itens Doados");
+            System.out.println("4 - Exclusão de Itens Doados");
+            System.out.println("5 - Cadastro de abrigo");
+            System.out.println("6 - Leitura de abrigos");
+            System.out.println("7 - Edição de abrigo");
+            System.out.println("8 - Exclusão de abrigo");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -56,6 +64,8 @@ public class Application {
             scanner.nextLine();
             Long distributionCenterId;
             long donationId;
+            long shelterId;
+            ShelterDto shelterDto;
             switch (option) {
                 case 1:
                     if(getInt("Deseja cadastrar:\n1 - De um arquivo csv\n2 - Manualmente", scanner) == 1){
@@ -174,6 +184,34 @@ public class Application {
                      donationId = chooseDonationById("Qual doação você deseja excluir?",donationRepository,scanner);
                      donationRepository.delete(donationId);
                     break;
+                case 5:
+                    shelterDto = new ShelterDto(
+                            getString("Informe o nome do abrigo",scanner),
+                            getString("Informe o endereço do abrigo", scanner),
+                            getString("Informe o nome do responsável pelo abrigo", scanner),
+                            getString("Informe o telefone do abrigo", scanner),
+                            getString("Informe o email do abrigo", scanner),
+                            getString("Informe a capacidade de armazenamento do abrigo", scanner)
+                            );
+                    shelterService.saveShelter(shelterDto);
+                case 6:
+                    System.out.println("Abrigos cadastrados:\n");
+                    printShelters(shelterRepository.findAll());
+                case 7:
+                    shelterId = chooseShelterById("Qual abrigo você deseja editar?", shelterRepository, scanner);
+                    Shelter shelter = shelterRepository.findById(shelterId);
+                    System.out.println("Informe os novos dados do abrigo:");
+                    shelterDto = new ShelterDto(
+                            getString("Nome:", scanner),
+                            getString("Endereço:", scanner),
+                            getString("Responsável:", scanner),
+                            getString("Telefone:", scanner),
+                            getString("Email:", scanner),
+                            getString("Capacidade de armazenamento:", scanner)
+                    );
+                    shelterRepository.update(shelter);
+                    break;
+
                 case 0:
                     System.out.println("Saindo...");
                     Thread.sleep(1000);
@@ -191,6 +229,32 @@ public class Application {
             distributionCenterRepository.close();
 
         }
+
+    private static long chooseShelterById(String question, ShelterRepository shelterRepository, Scanner scanner) {
+        long shelterId;
+        System.out.println(question);
+        List<Shelter> shelters = shelterRepository.findAll();
+        printShelters(shelters);
+        while (true) {
+            try {
+                shelterId = scanner.nextLong();
+                long finalShelterId = shelterId;
+                if (shelters.stream().anyMatch(shelter -> shelter.getId().equals(finalShelterId))) {
+                    break;
+                } else {
+                    System.out.println("ID inválido. Tente novamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, insira um número.");
+                scanner.nextLine();
+            }
+        }
+        return 0;
+    }
+
+    private static void printShelters(List<Shelter> shelters) {
+        shelters.forEach(System.out::println);
+    }
 
     private static String getDonationType(Donation donation) {
         if(donation.getClothes() != null) {

@@ -27,19 +27,15 @@ public class DistributionCenter implements Serializable {
 
     private String name;
     private String address;
-    private String responsible;
-    private String phone;
 
     @OneToMany(mappedBy = "distributionCenter")
     private List<Donation> donations;
 
 
 
-    public DistributionCenter(Long id, String name, String address, String responsible, String phone) {
+    public DistributionCenter(Long id, String name, String address) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.responsible = responsible;
-        this.phone = phone;
     }
 }
