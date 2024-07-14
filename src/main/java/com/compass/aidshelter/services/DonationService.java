@@ -2,6 +2,7 @@ package com.compass.aidshelter.services;
 
 import com.compass.aidshelter.dto.ClothesDto;
 import com.compass.aidshelter.dto.DonationDto;
+import com.compass.aidshelter.dto.FoodsDto;
 import com.compass.aidshelter.entities.*;
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
@@ -37,7 +38,6 @@ public class DonationService {
     public void loadDonations(String donationFilePath) {
         List<DonationDto> donationDtos = DonationReader.readDonationsFromCsv(donationFilePath);
         Donation donation;
-        ;
 
         for (DonationDto donationDto : donationDtos) {
             DistributionCenter distributionCenter = distributionCenterRepository.findById(Long.parseLong(donationDto.destination()));
@@ -97,6 +97,20 @@ public class DonationService {
                 optionalClothes = clothesRepository.findByValues(donationDto.getDescription(), ClothesSize.valueOf(donationDto.getSize()), ClothesGender.valueOf(donationDto.getGender()));
             }
             Donation donation = new Donation((Long) null, distributionCenter, quantity, null,optionalClothes.get(),null);
+            donationRepository.save(donation);
+        }
+
+    }
+
+    public void foodsDonation(FoodsDto donationDto, DistributionCenter distributionCenter, Integer quantity){
+        if(donationRepository.findAll().stream().filter(item -> item.getFoods() != null).count() < threshold) {
+            Optional<Foods> optionalFoods = foodsRepository.findByValues(donationDto.getDescription(),donationDto.getQuantityFood(),donationDto.getUnitMeasure(),donationDto.getExpirationDate());
+            if(optionalFoods.isEmpty()) {
+                Foods foods = new Foods(null,donationDto.getDescription(),donationDto.getQuantityFood(),donationDto.getUnitMeasure(),donationDto.getExpirationDate());
+                foodsRepository.save(foods);
+                optionalFoods = foodsRepository.findByValues(donationDto.getDescription(),donationDto.getQuantityFood(),donationDto.getUnitMeasure(),donationDto.getExpirationDate());
+            }
+            Donation donation = new Donation(null, distributionCenter, quantity, optionalFoods.get(), null, null);
             donationRepository.save(donation);
         }
 

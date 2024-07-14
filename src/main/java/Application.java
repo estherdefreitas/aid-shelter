@@ -1,13 +1,16 @@
 import com.compass.aidshelter.config.DbConfig;
 import com.compass.aidshelter.dto.ClothesDto;
+import com.compass.aidshelter.dto.FoodsDto;
 import com.compass.aidshelter.entities.DistributionCenter;
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
-import com.compass.aidshelter.entities.enums.ToiletriesType;
 import com.compass.aidshelter.repositories.*;
 import com.compass.aidshelter.services.DistributionCenterService;
 import com.compass.aidshelter.services.DonationService;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -80,14 +83,14 @@ public class Application {
                                 System.out.println("Informe o tamanho " + Arrays.toString(ClothesSize.values()) + ":");
                                 inputString = scanner.nextLine();
                                 while (!ClothesSize.isValidClothesSize(inputString)){
-                                    System.out.println("Informe um tamanho válido");
+                                    System.out.println("Informe um tamanho válido!" + Arrays.toString(ClothesSize.values()) + ":");
                                     inputString = scanner.nextLine();
                                 }
                                 newClothes.setSize(inputString.toUpperCase());
                                 System.out.println("Informe o gênero" + Arrays.toString(ClothesGender.values()) + ":");
                                 inputString = scanner.nextLine();
                                 while (!ClothesGender.isValidClothesGender(inputString)){
-                                    System.out.println("Informe um gênero válido");
+                                    System.out.println("Informe um gênero válido!" + Arrays.toString(ClothesGender.values()) + ":");
                                     inputString = scanner.nextLine();
                                 }
                                 newClothes.setGender(inputString.toUpperCase());
@@ -95,13 +98,42 @@ public class Application {
 
                                 break;
                             case 2:
+
+
                                 break;
                             case 3:
+                                FoodsDto newFoods = new FoodsDto();
+                                System.out.println("Informe quantas comidas embaladas:");
+                                itemQuantity = scanner.nextInt();
+                                scanner.nextLine();
+                                System.out.println("Informe a descrição da comida:");
+                                newFoods.setDescription(scanner.nextLine());
+                                System.out.println("Informe a quantidade que a embalagem armazena");
+                                newFoods.setQuantityFood(scanner.nextInt());
+                                scanner.nextLine();
+                                System.out.println("Informe a unidade de medida que a embalagem comporta:");
+                                newFoods.setUnitMeasure(scanner.nextLine());
+                                System.out.println("Informe a válidade:");
+                                LocalDate expirationDate = null;
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                                while (expirationDate == null) {
+                                    System.out.println("Informe a validade (dd-MM-yyyy):");
+                                    String userInput = scanner.nextLine();
+
+                                    try {
+                                        expirationDate = LocalDate.parse(userInput, formatter);
+                                    } catch (DateTimeParseException e) {
+                                        System.out.println("Formato de data inválido. Por favor, use o formato dd-MM-yyyy.");
+                                    }
+                                }
+                                newFoods.setExpirationDate(expirationDate);
+                                donationService.foodsDonation(newFoods,distributionCenterRepository.findById(distributionCenterId), itemQuantity);
+
                                 break;
                             case 0:
                                 break;
                             default:
-                                System.out.println("Opção inválida!");
+                                System.out.println("Opção inválida!\n");
                                 Thread.sleep(1000);
                         }
                         System.out.println("Deseja fazer outra doação?");
@@ -112,20 +144,20 @@ public class Application {
                     }
                         break;
                 case 2:
-                    System.out.println("Donated items:\n");
+                    System.out.println("Itens doados:\n");
                     donationRepository.findAll().stream()
                             .filter(donation -> donation.getClothes() != null || donation.getFoods() != null || donation.getToiletries() != null)
                             .forEach(donation -> {
-                                System.out.println("Donation ID: " + donation.getId() + ", Quantity: " + donation.getQuantity());
+                                System.out.println("ID: " + donation.getId() + ", Quantidade: " + donation.getQuantity());
 
                                 if (donation.getClothes() != null) {
-                                    System.out.println("Clothes Description: " + donation.getClothes().getDescription() + "\nClothes gender: " + donation.getClothes().getGender() + "\nClothes size: " + donation.getClothes().getSize());
+                                    System.out.println("Descrição da roupa: " + donation.getClothes().getDescription() + "\nGênero da roupa: " + donation.getClothes().getGender() + "\nTamanho da roupa: " + donation.getClothes().getSize());
                                 }
                                 if (donation.getFoods() != null) {
-                                    System.out.println("Foods Description: " + donation.getFoods().getDescription() + "\nFoods expiration date: " + donation.getFoods().getExpirationDate() + "Foods quantity: " + donation.getFoods().getQuantity() + donation.getFoods().getUnitMeasure());
+                                    System.out.println("Descrição da comida: " + donation.getFoods().getDescription() + "\nData de expiração da comida: " + donation.getFoods().getExpirationDate() + "Quantidade da embalagem: " + donation.getFoods().getQuantityFood() + donation.getFoods().getUnitMeasure());
                                 }
                                 if (donation.getToiletries() != null) {
-                                    System.out.println("Toiletries Description: " + donation.getToiletries().getDescription() + "\nToiletries type: " + donation.getToiletries().getType());
+                                    System.out.println("Descrição do produto de higiene: " + donation.getToiletries().getDescription() + "\nTipo do produto de higiene: " + donation.getToiletries().getType());
                                 }
                                 System.out.println();
                             });
@@ -142,6 +174,7 @@ public class Application {
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
+                    Thread.sleep(1000);
                     }
             }
 

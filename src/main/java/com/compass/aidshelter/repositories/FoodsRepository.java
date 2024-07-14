@@ -14,16 +14,16 @@ public class FoodsRepository extends Repository<Foods> {
     }
 
 
-    public Optional<Foods> findByValues(String description, Integer quantity, String unitMeasure, LocalDate expirationDate) {
+    public Optional<Foods> findByValues(String description, Integer quantityFood, String unitMeasure, LocalDate expirationDate) {
         String jpql = "SELECT f FROM Foods f " +
                 "WHERE f.description = :description " +
-                "AND f.quantity = :quantity " +
+                "AND f.quantityFood = :quantity " +
                 "AND f.unitMeasure = :unitMeasure " +
                 "AND f.expirationDate = :expirationDate";
 
         TypedQuery<Foods> query = em.createQuery(jpql, Foods.class);
         query.setParameter("description", description);
-        query.setParameter("quantity", quantity);
+        query.setParameter("quantity", quantityFood);
         query.setParameter("unitMeasure", unitMeasure);
         query.setParameter("expirationDate", expirationDate);
 

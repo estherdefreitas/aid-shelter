@@ -23,14 +23,14 @@ public class Foods extends Item  implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    private Integer quantity;
+    private Integer quantityFood;
     private String unitMeasure;
     private LocalDate expirationDate;
 
-    public Foods(Long id, String description, Integer quantity, String unitMeasure, LocalDate expirationDate) {
+    public Foods(Long id, String description, Integer quantityFood, String unitMeasure, LocalDate expirationDate) {
         super.setDescription(description);
         this.id = id;
-        this.quantity = quantity;
+        this.quantityFood = quantityFood;
         this.unitMeasure = unitMeasure;
         this.expirationDate = expirationDate;
     }
