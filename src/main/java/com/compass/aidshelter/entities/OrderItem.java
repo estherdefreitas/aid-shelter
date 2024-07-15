@@ -1,14 +1,10 @@
 package com.compass.aidshelter.entities;
 
-import com.compass.aidshelter.entities.enums.ClothesGender;
-import com.compass.aidshelter.entities.enums.ClothesSize;
-import com.compass.aidshelter.entities.enums.ToiletriesType;
 import com.compass.aidshelter.entities.pks.OrderItemPk;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @Getter
 @Setter

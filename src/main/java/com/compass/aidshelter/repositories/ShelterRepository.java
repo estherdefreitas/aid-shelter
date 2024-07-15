@@ -1,7 +1,6 @@
 package com.compass.aidshelter.repositories;
 
 import com.compass.aidshelter.entities.Shelter;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
