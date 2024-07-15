@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_clothes")
@@ -36,5 +35,13 @@ public class Clothes extends Item implements Serializable{
         this.id = id;
         this.size = size;
         this.gender = gender;
+    }
+    public Long getId() {
+        return super.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "Id da roupa: " + super.getId() + "\nDescrição: " + getDescription() + "\nTamanho: " + size + "\nGenêro: " + gender;
     }
 }

@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-
+import java.util.List;
 
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -31,5 +31,19 @@ public class Shelter implements Serializable {
     private String email;
     private String storageCapacity;
     private String occupationPercentage;
+
+    public Shelter(Long id, String name, String address, String responsible, String phone, String email, String storageCapacity, String occupationPercentage) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.responsible = responsible;
+        this.phone = phone;
+        this.email = email;
+        this.storageCapacity = storageCapacity;
+        this.occupationPercentage = occupationPercentage;
+    }
+
+    @OneToMany(mappedBy = "shelter")
+    private List<Order> orders;
 
 }

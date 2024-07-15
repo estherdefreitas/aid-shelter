@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_toiletries")
@@ -30,6 +29,14 @@ public class Toiletries extends Item implements Serializable {
         super.setDescription(description);
         this.id = id;
         this.type = type;
+    }
+    public Long getId() {
+        return super.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "Id do produto de higiene: " + super.getId() + "\nDescrição: " + getDescription() + "\nTipo: " + type;
     }
 
 }

@@ -29,4 +29,21 @@ public class DonationRepository extends Repository<Donation> {
         return count != null ? count : 0;
     }
 
+    public Long countAllItemDonationsByDistributionCenterId(Long distributionCenterId, Long itemId) {
+        return em.createQuery(
+                """
+                        SELECT COUNT(d.quantity)
+                        FROM Donation d
+                        WHERE d.distributionCenter.id = :distributionCenterId
+                        AND ((d.toiletries is not null AND d.toiletries.id = :itemId)
+                        OR (d.clothes is not null AND d.clothes.id = :itemId)
+                        OR (d.foods is not null AND d.foods.id = :itemId))
+                        """,
+                        Long.class
+                )
+                .setParameter("distributionCenterId", distributionCenterId)
+                .setParameter("itemId", itemId)
+                .getSingleResult();
+    }
+
 }

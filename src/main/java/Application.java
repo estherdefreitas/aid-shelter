@@ -7,9 +7,11 @@ import com.compass.aidshelter.entities.*;
 import com.compass.aidshelter.entities.enums.ClothesGender;
 import com.compass.aidshelter.entities.enums.ClothesSize;
 import com.compass.aidshelter.entities.enums.ToiletriesType;
+import com.compass.aidshelter.enums.ItemTypes;
 import com.compass.aidshelter.repositories.*;
 import com.compass.aidshelter.services.DistributionCenterService;
 import com.compass.aidshelter.services.DonationService;
+import com.compass.aidshelter.services.OrderService;
 import com.compass.aidshelter.services.ShelterService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -34,6 +36,9 @@ public class Application {
         DistributionCenterRepository distributionCenterRepository = new DistributionCenterRepository();
         DonationRepository donationRepository = new DonationRepository();
         ShelterRepository shelterRepository = new ShelterRepository();
+        OrderItemRepository orderItemRepository = new OrderItemRepository();
+        ItemRepository itemRepository = new ItemRepository();
+        OrderRepository orderRepository = new OrderRepository();
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -44,7 +49,9 @@ public class Application {
         DonationService donationService = new DonationService(clothesRepository, foodsRepository, toiletriesRepository, distributionCenterRepository, donationRepository);
         donationService.loadDonations(args[1]);
 
-        ShelterService shelterService = new ShelterService(shelterRepository);
+        OrderService orderService = new OrderService(orderRepository, distributionCenterRepository, donationService);
+
+        ShelterService shelterService = new ShelterService(shelterRepository, orderItemRepository);
 
         Scanner scanner;
         scanner = new Scanner(System.in);
@@ -60,6 +67,7 @@ public class Application {
             System.out.println("6 - Leitura de abrigos");
             System.out.println("7 - Edição de abrigo");
             System.out.println("8 - Exclusão de abrigo");
+            System.out.println("9 - Ordem de pedido de itens");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -70,6 +78,7 @@ public class Application {
             long donationId;
             long shelterId;
             ShelterDto shelterDto;
+            Shelter shelter;
             switch (option) {
                 case 1:
                     if(getInt("Deseja cadastrar:\n1 - De um arquivo csv\n2 - Manualmente", scanner) == 1){
@@ -194,7 +203,7 @@ public class Application {
                             getString("Informe o endereço do abrigo", scanner),
                             getString("Informe o nome do responsável pelo abrigo", scanner),
                             getString("Informe o telefone do abrigo", scanner),
-                            getString("Informe o email do abrigo", scanner),
+                            getString("Informe o e-mail do abrigo", scanner),
                             getString("Informe a capacidade do abrigo", scanner),
                             getString("Informe a porcentagem de ocupação do abrigo ",scanner)
                             );
@@ -214,7 +223,10 @@ public class Application {
                     break;
                 case 7:
                     shelterId = chooseShelterById("Qual abrigo você deseja editar?", shelterRepository, scanner);
-                    Shelter shelter = shelterRepository.findById(shelterId);
+                    if(shelterId == -1){
+                        break;
+                    }
+                    shelter = shelterRepository.findById(shelterId);
                     System.out.println("Informe os novos dados do abrigo:");
                     shelterDto = new ShelterDto(
                             getString("Nome:", scanner),
@@ -225,11 +237,39 @@ public class Application {
                             getString("Capacidade de armazenamento:", scanner),
                             getString("Porcentagem de ocupação:", scanner)
                     );
-                    shelterRepository.update(shelter);
+                    shelterService.updateShelter(shelter.getId(), shelterDto);
                     break;
                 case 8:
                     shelterId = chooseShelterById("Qual abrigo você deseja excluir?", shelterRepository, scanner);
                     shelterRepository.delete(shelterId);
+                    break;
+                case 9:
+                    shelterId = chooseShelterById("Escolha o abrigo:", shelterRepository, scanner);
+                    if (shelterId < 0){
+                        break;
+                    }
+                    shelter = shelterRepository.findById(shelterId);
+                    String itemType = ItemTypes.itemTypesToDomain(ItemTypes.valueOf(getString("Informe o tipo de item (roupa, comida, higiene):", scanner).toUpperCase()));
+                    Item item = printAllItemsOfType(itemType, itemRepository, scanner);
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setItem(item);
+                    orderItem.setQuantity(getInt("Informe a quantidade necessária: ", scanner));
+                    orderItem.setShelter(shelter);
+                    List<OrderItem> orderItems = new ArrayList<>();
+                    orderItems.add(orderItem);
+                    Order order = orderService.createOrderRequest(shelter, orderItems);
+                    System.out.println("Pedido cadastrado com sucesso");
+                    List<DistributionCenter> centers = orderService.findCentersForItem(item, orderItem.getQuantity());
+                    if (centers.isEmpty()) {
+                        System.out.println("Não há centros de distribuição disponíveis para atender a demanda.");
+                    } else {
+                        System.out.println("Centros de distribuição disponíveis:");
+                        for(DistributionCenter center : centers){
+                            System.out.println(center);
+                        }
+
+                    }
+
                     break;
 
                 case 0:
@@ -248,19 +288,62 @@ public class Application {
             toiletriesRepository.close();
             distributionCenterRepository.close();
             shelterRepository.close();
+            itemRepository.close();
+            orderRepository.close();
         }
+
+    private static Item printAllItemsOfType(String itemType, ItemRepository itemRepository, Scanner scanner) {
+        List<Item> items = itemRepository.findAll();
+        if (items.isEmpty()) {
+            System.out.println("Não há itens cadastrados.");
+            return null;
+        }
+        System.out.println("Itens do tipo " + capitalizeFirstLetter(itemType) + ":");
+        List<Item> filteredItems = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getClass().getSimpleName().equals(itemType)) {
+                filteredItems.add(item);
+            }
+        }
+        if(filteredItems.isEmpty()){
+            System.out.println("Não há itens desse tipo.");
+            return null;
+        }
+        filteredItems.forEach(System.out::println);
+        long itemId;
+        while (true) {
+            try {
+                System.out.println("Escolha um item pelo ID:");
+                itemId = scanner.nextLong();
+                scanner.nextLine();
+                long finalItemId = itemId;
+                if (filteredItems.stream().anyMatch(item -> item.getId().equals(finalItemId))) {
+                    return itemRepository.findById(itemId);
+                } else {
+                    System.out.println("ID inválido. Tente novamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, insira um número.");
+            }
+        }
+    }
 
     private static long chooseShelterById(String question, ShelterRepository shelterRepository, Scanner scanner) {
         long shelterId;
-        System.out.println(question);
         List<Shelter> shelters = shelterRepository.findAll();
+        if(shelters.isEmpty()){
+            System.out.println("Não há abrigos cadastrados");
+            return -1;
+        }
+        System.out.println(question);
         printShelters(shelters);
         while (true) {
             try {
                 shelterId = scanner.nextLong();
+                scanner.nextLine();
                 long finalShelterId = shelterId;
                 if (shelters.stream().anyMatch(shelter -> shelter.getId().equals(finalShelterId))) {
-                    break;
+                    return finalShelterId;
                 } else {
                     System.out.println("ID inválido. Tente novamente.");
                 }
@@ -269,22 +352,21 @@ public class Application {
                 scanner.nextLine();
             }
         }
-        return 0;
     }
 
     private static void printShelters(List<Shelter> shelters) {
         if (shelters.isEmpty()) {
-            System.out.println("No shelters to display.");
+            System.out.println("Não há abrigos cadastrados.");
         } else {
             shelters.forEach(shelter -> {
-                System.out.println("Shelter ID: " + shelter.getId());
-                System.out.println("Name: " + shelter.getName());
-                System.out.println("Address: " + shelter.getAddress());
-                System.out.println("Responsible: " + shelter.getResponsible());
-                System.out.println("Phone: " + shelter.getPhone());
-                System.out.println("Email: " + shelter.getEmail());
-                System.out.println("Storage Capacity: " + shelter.getStorageCapacity());
-                System.out.println("Occupation Percentage: " + shelter.getOccupationPercentage());
+                System.out.println("ID do abrigo: " + shelter.getId());
+                System.out.println("Nome: " + shelter.getName());
+                System.out.println("Endereço: " + shelter.getAddress());
+                System.out.println("Responsável: " + shelter.getResponsible());
+                System.out.println("Telefone: " + shelter.getPhone());
+                System.out.println("E-mail: " + shelter.getEmail());
+                System.out.println("Capacidade: " + shelter.getStorageCapacity());
+                System.out.println("Ocupação: " + shelter.getOccupationPercentage() + "%");
                 System.out.println("----------");
             });
         }
@@ -346,7 +428,30 @@ public class Application {
         scanner.nextLine();
         return donationId;
     }
+    private static Item printAllItemsAndReturnOneItem(List<Clothes> allClothes, List<Foods> allFoods, List<Toiletries> allToiletries,Scanner scanner) {
+        List<Item> allItems = new ArrayList<>();
+        allItems.addAll(allClothes);
+        allItems.addAll(allFoods);
+        allItems.addAll(allToiletries);
+        for (int i = 0; i < allItems.size(); i++) {
+            System.out.println((i + 1) + ": " + allItems.get(i));
+        }
+        int choice = -1;
+        while (choice < 1 || choice > allItems.size()) {
+            System.out.print("Enter the number of the item you want to choose: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                if (choice < 1 || choice > allItems.size()) {
+                    System.out.println("Invalid choice. Please choose a number between 1 and " + allItems.size() + ".");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        }
 
+        return allItems.get(choice - 1);
+    }
     private static void printDonations(List<Donation> donations) {
         donations.stream()
                 .filter(donation -> donation.getClothes() != null || donation.getFoods() != null || donation.getToiletries() != null)
@@ -443,5 +548,11 @@ public class Application {
             distributionCenterId = scanner.nextLong();
         }
         return distributionCenterId;
+    }
+    public static String capitalizeFirstLetter(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }

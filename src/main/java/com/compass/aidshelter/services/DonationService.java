@@ -105,4 +105,12 @@ public class DonationService {
         }
 
     }
+
+    public Long getAvailableQuantityByCenter(Item item, DistributionCenter center) {
+
+        return donationRepository.countAllItemDonationsByDistributionCenterId(center.getId(), item.getId());
+
+
+    }
+
 }

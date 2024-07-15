@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 @Table(name = "tb_foods")
@@ -33,6 +32,15 @@ public class Foods extends Item  implements Serializable {
         this.quantityFood = quantityFood;
         this.unitMeasure = unitMeasure;
         this.expirationDate = expirationDate;
+    }
+
+    public Long getId() {
+        return super.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "Id da comida: " + super.getId() + "\nDescrição: " + getDescription() + "\nQuantidade: " + quantityFood + unitMeasure + "\nData de Expiração: " + expirationDate;
     }
 
 }
