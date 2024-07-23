@@ -3,7 +3,20 @@
 AidShelter é uma aplicação Java que utiliza JPA, Hibernate, Gradle e MySQL para gerenciar doações e distribuição de suprimentos para abrigos. O projeto tem como objetivo auxiliar vítimas de enchentes através da gestão eficiente de doações, centros de distribuição e abrigos.
 
 ## Configuração do Banco de Dados
-O arquivo persistence.xml está localizado em src/main/resources/META-INF e contém a configuração de persistência do JPA. Certifique-se de configurar as propriedades do banco de dados corretamente, substituindo os valores de ${jdbc.url} pelo endereço do banco, ${jdbc.user} pelo usuário de login do banco e ${jdbc.password} pela senha do banco.
+O arquivo persistence.xml está localizado em src/main/resources/META-INF e contém a configuração de persistência do JPA. Certifique-se de configurar as propriedades do banco de dados corretamente, substituindo os valores de `${jdbc.url}` pelo endereço do banco, `${jdbc.user}` pelo usuário de login do banco e `${jdbc.password}` pela senha do banco.
+
+```xml
+<properties>
+    <property name="jakarta.persistence.jdbc.url" value="${jdbc.url}"/>
+    <property name="jakarta.persistence.jdbc.user" value="${jdbc.user}"/>
+    <property name="jakarta.persistence.jdbc.password" value="${jdbc.password}"/>
+    <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
+    <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+    <property name="hibernate.hbm2ddl.auto" value="update"/>
+    <property name="hibernate.show_sql" value="false"/>
+</properties>
+```
 
 ## Dependências
 
