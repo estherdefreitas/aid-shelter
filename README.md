@@ -2,58 +2,6 @@
 
 AidShelter é uma aplicação Java que utiliza JPA, Hibernate, Gradle e MySQL para gerenciar doações e distribuição de suprimentos para abrigos. O projeto tem como objetivo auxiliar vítimas de enchentes através da gestão eficiente de doações, centros de distribuição e abrigos.
 
-## Estrutura do Projeto
-
-```plaintext
-AidShelter/
-├── .gradle/
-├── .idea/
-├── build/
-│   ├── classes/
-│   │   └── java/
-│   │       └── main/
-│   │           └── com/
-│   │               └── compass/
-│   │                   └── aidshelter/
-│   │                       ├── config/
-│   │                       ├── dto/
-│   │                       ├── entities/
-│   │                       │   ├── enums/
-│   │                       │   └── pks/
-│   │                       ├── enums/
-│   │                       ├── input/
-│   │                       ├── repositories/
-│   │                       ├── services/
-│   │                       └── validators/
-│   ├── generated/
-│   ├── resources/
-│   │   └── main/
-│   │       └── META-INF/
-│   └── tmp/
-├── gradle/
-│   └── wrapper/
-└── src/
-    ├── main/
-    │   ├── java/
-    │   │   └── com/
-    │   │       └── compass/
-    │   │           └── aidshelter/
-    │   │               ├── config/
-    │   │               ├── dto/
-    │   │               ├── entities/
-    │   │               │   ├── enums/
-    │   │               │   └── pks/
-    │   │               ├── enums/
-    │   │               ├── input/
-    │   │               ├── repositories/
-    │   │               ├── services/
-    │   │               └── validators/
-    │   └── resources/
-    │       └── META-INF/
-    └── test/
-        ├── java/
-        └── resources/
-
 ## Configuração do Banco de Dados
 O arquivo persistence.xml está localizado em src/main/resources/META-INF e contém a configuração de persistência do JPA. Certifique-se de configurar as propriedades do banco de dados corretamente, substituindo os valores de ${jdbc.url} pelo endereço do banco, ${jdbc.user} pelo usuário de login do banco e ${jdbc.password} pela senha do banco.
 
